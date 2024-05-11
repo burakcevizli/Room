@@ -10,6 +10,7 @@ import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useToast } from "@/components/ui/use-toast"
 import { Textarea } from "./ui/textarea";
 import ReactDatePicker from 'react-datepicker';
+import { Input } from "./ui/input";
 
 const MeetingTypeList = () => {
   const [meetingState, setMeetingState] = useState<
@@ -55,7 +56,7 @@ const MeetingTypeList = () => {
           }
         }
       })
-      
+
       setCallDetails(call);
       if (!values.description) {
         router.push(`/meeting/${call.id}`)
@@ -93,7 +94,7 @@ const MeetingTypeList = () => {
         img="/icons/recordings.svg"
         title="View Recordings"
         description="Check out your recordings"
-        handleClick={() => setMeetingState("isJoiningMeeting")}
+        handleClick={() => router.push('/recordings')}
         className="bg-purple-1"
       />
       <HomeCard
@@ -110,27 +111,27 @@ const MeetingTypeList = () => {
           title="Create Meeting"
           handleClick={createMeeting}
         >
-           <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-2.5">
             <label className="text-base text-normal leading-[22px] text-sky-2">Add a description</label>
             <Textarea className="border-none bg-dark-3 focus-visible:ring-0 focus-visible:ring-offset-0"
-              onChange={(e)=>{
-                setValues({...values,description:e.target.value});
+              onChange={(e) => {
+                setValues({ ...values, description: e.target.value });
               }}
             />
-           </div>
-           <div className="flex w-full flex-col gap-2.5">
-           <label className="text-base text-normal leading-[22px] text-sky-2">Select Date and Time</label>
-           <ReactDatePicker
-            selected={values.dateTime}
-            onChange={(date)=>setValues({...values,dateTime:date!})}
-            showTimeSelect
-            timeFormat="HH::mm"
-            timeIntervals={15}
-            timeCaption="time"
-            dateFormat={'d MMMM, yyyy h:mm aa'}
-            className="w-full rounded bg-dark-3 p-2 focus:outline-none"
-           />
-           </div>
+          </div>
+          <div className="flex w-full flex-col gap-2.5">
+            <label className="text-base text-normal leading-[22px] text-sky-2">Select Date and Time</label>
+            <ReactDatePicker
+              selected={values.dateTime}
+              onChange={(date) => setValues({ ...values, dateTime: date! })}
+              showTimeSelect
+              timeFormat="HH::mm"
+              timeIntervals={15}
+              timeCaption="time"
+              dateFormat={'d MMMM, yyyy h:mm aa'}
+              className="w-full rounded bg-dark-3 p-2 focus:outline-none"
+            />
+          </div>
         </MeetingModal>
       ) : (
         <MeetingModal
@@ -140,7 +141,7 @@ const MeetingTypeList = () => {
           className="text-center"
           handleClick={() => {
             navigator.clipboard.writeText(meetingLink);
-            toast({title:'Link Copied'})
+            toast({ title: 'Link Copied' })
           }}
           image="/icons/checked.svg"
           buttonIcon="/icons/copy.svg"
@@ -156,6 +157,18 @@ const MeetingTypeList = () => {
         buttonText="Start Meeting"
         handleClick={createMeeting}
       />
+
+      <MeetingModal
+        isOpen={meetingState === 'isJoiningMeeting'}
+        onClose={() => setMeetingState(undefined)}
+        title="Type The Link Here"
+        className="text-center"
+        buttonText="Join Meeting"
+        handleClick={()=>router.push(values.link)}
+      >
+        <Input placeholder="Meeting Link" className="border-none bg-dark-3 focus-visible:ring-0 focus-visible:ring-offset-0"
+        onChange={(e)=> setValues({...values, link:e.target.value})}/>
+      </MeetingModal>
     </section>
   );
 };
