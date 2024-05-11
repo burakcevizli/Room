@@ -55,6 +55,7 @@ const MeetingTypeList = () => {
           }
         }
       })
+      
       setCallDetails(call);
       if (!values.description) {
         router.push(`/meeting/${call.id}`)
